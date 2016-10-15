@@ -1,0 +1,113 @@
+---
+swagger: "2.0"
+info:
+  description: "This API is used to send and receive messages to and from Raspberry\
+    \ Pi, routed via Azure ServiceBus queues."
+  version: "1.0.0"
+  title: "DisplayPI API"
+  contact:
+    name: "@thefitgeekgirl\n@sn0wcat\n"
+    url: "http://fitgeekgirl.com"
+  license:
+    name: "MIT"
+    url: "http://opensource.org/licenses/MIT"
+host: "displayblinky.azurewebsites.net"
+basePath: "/api"
+schemes:
+- "http"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /messages:
+    get:
+      description: "Gets `DisplayPiOutputMessage` objects.\nOptional query param of\
+        \ **size** determines\nsize of returned array\n"
+      operationId: "getMessages"
+      parameters:
+      - name: "size"
+        in: "query"
+        description: "Size of array"
+        required: false
+        type: "number"
+        format: "int32"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/DisplayPiOutputMessage"
+      x-swagger-router-controller: "Default"
+  /sendMessage:
+    post:
+      description: "sends a new message to the LED display of the raspberryPi"
+      operationId: "sendMessage"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "message"
+        description: "new message"
+        required: true
+        schema:
+          $ref: "#/definitions/NewMessage"
+      responses:
+        200:
+          description: "sucessfull response"
+      x-swagger-router-controller: "Default"
+definitions:
+  NewMessage:
+    type: "object"
+    properties:
+      Message:
+        type: "string"
+        description: "The actual message, sent from the website to the display"
+      Author:
+        type: "string"
+        description: "name of the author who sent the message."
+    description: "The input message from web site"
+  DisplayPiInputMessage:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        description: "Message Id. This must be lowercase because of the DocumentDB"
+      Message:
+        type: "string"
+        description: "The actual message, sent from the website to the display"
+      Author:
+        type: "string"
+        description: "name of the author who sent the message."
+      TimeStamp:
+        type: "string"
+        format: "dateTime"
+    description: "The input message from web site to the Raspberry Pi LED Screen which\
+      \ is sent to the queues."
+  DisplayPiOutputMessage:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        description: "Message Id. This must be lowercase because of the DocumentDB"
+      InputMessage:
+        $ref: "#/definitions/DisplayPiInputMessage"
+      AcknowledgementTimeStamp:
+        type: "string"
+        format: "dateTime"
+      MorseCode:
+        type: "string"
+        description: "morse code"
+      EncodedImage:
+        type: "string"
+        format: "base64encodedImage"
+        description: "The web cam picture of the screen"
+    description: "Output Message from Raspberry Pi to the website, containing a morse\
+      \ code for the message and a picture of the LED Screen"

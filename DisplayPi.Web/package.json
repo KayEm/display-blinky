@@ -1,0 +1,19 @@
+{
+  "name": "display-pi-api",
+  "version": "1.0.0",
+  "description": "This API is used to send and receive messages to and from Raspberry Pi, routed via Azure ServiceBus queues.",
+  "main": "index.js",
+  "keywords": [
+    "swagger"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "swagger-tools": "0.9.*",
+    "azure": "^0.10.6",
+    "node-uuid": "*",
+    "documentdb": "^1.6.0"
+  }
+}
